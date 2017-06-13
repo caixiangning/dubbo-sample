@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://code.alibabatech.com/schema/dubbo 
+		http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<!-- 应用配置，用于配置当前应用信息 -->
+	<dubbo:application name="codethink-dubbo-provider"/>
+
+	<!-- 注册中心配置，用于配置连接注册中心相关信息。 -->
+	<dubbo:registry address="127.0.0.1:2181" protocol="zookeeper" id="myzookeeper"/>
+	<!-- <dubbo:registry address="zookeeper://127.0.0.1:2181" /> -->
+	
+	<!-- 协议配置，用于配置提供服务的协议信息，协议由提供方指定，消费方被动接受。 -->
+	<dubbo:protocol name="dubbo" port="20886" id="mydubbo"/>
+	
+	<!-- 提供方的缺省值，当ProtocolConfig和ServiceConfig某属性没有配置时，采用此缺省值，可选。 -->
+	<dubbo:provider registry="myzookeeper" protocol="mydubbo"/> 
+	
+	<!-- 注册服务到Spring容器中，实际操作中可以使用Spring自动扫描注册机制来注册而不是显式注册 -->
+	<bean name="calculateService" class="org.dubbo.provider.service.impl.CalculateServiceImpl"></bean>
+	
+	<!-- 服务配置，用于暴露一个服务，定义服务的元信息，一个服务可以用多个协议暴露，一个服务也可以注册到多个注册中心。 -->
+	<dubbo:service interface="org.dubbo.interfaces.service.CalculateService" ref="calculateService"/>
+</beans>
